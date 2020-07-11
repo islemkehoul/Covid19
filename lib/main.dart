@@ -1,5 +1,10 @@
-import 'package:covid19/service.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+//import 'dart:convert';
+
 
 void main() {
   runApp(
@@ -20,7 +25,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Service obj = new Service();
+    Map results;
+    List cases ; 
+
+   Future getJasonData() async{
+   var response = await http.get( "https://thevirustracker.com/free-api?global=stats");
+      results = json.decode(response.body);
+      cases = results["results"];
+     print(cases);
+      
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,8 +43,8 @@ class _HomeState extends State<Home> {
         child: RaisedButton(
           child:Text('data'),
           onPressed: (){
-             obj.getJasonData();
-           
+          getJasonData();
+         
           },
           
         ),
