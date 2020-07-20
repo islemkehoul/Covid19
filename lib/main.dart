@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -25,31 +24,53 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-    Map results;
-    List cases ; 
+    Map result;
+    Map cases ; 
 
    Future getJasonData() async{
-   var response = await http.get( "https://thevirustracker.com/free-api?global=stats");
-      results = json.decode(response.body);
-      cases = results["results"];
-     print(cases);
-      
+
+    var response = await http.get( "https://thevirustracker.com/free-api?global=stats");
+    result = json.decode(response.body);
+    cases = result["results"][0];
+    //print(cases[0]['total_cases']);
+    print(result[0]);
+    
   }
+
+  /*@override
+  void initState(){
+    super.initState();
+  }*/
+
   @override
   Widget build(BuildContext context) {
+    getJasonData();
+    print(cases);
+    var cards = <Widget>[];
+    cases.forEach((key, value) { 
+
+     cards.add( Card(
+             child: Column(
+              children: <Widget>[
+
+               Text('$key : $value'),
+
+              ],
+               
+             ),
+     )
+          );
+     });
     return Scaffold(
-      body:
-      Center(
-        child: RaisedButton(
-          child:Text('data'),
-          onPressed: (){
-          getJasonData();
-         
+      backgroundColor: Colors.grey[700],
+      body:ListView.builder(
+        itemCount: cases.length,
+        itemBuilder: (BuildContext context, int index) {
+
+          return cards[index];
           },
-          
-        ),
-      )
-      
+        )
+
     );
   }
 }
